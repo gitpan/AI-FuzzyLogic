@@ -110,7 +110,7 @@ between two sets, one or both of which have more than one subset.
 
 =cut
 
-our $VERSION='0.03';
+our $VERSION='0.04';
 
 use strict;
 use warnings;
@@ -1645,3 +1645,14 @@ and one base) can be created for reasons other than adding new combinational beh
 Different operator behavior can be defined. I might develop this interface better 
 if there is demand.
 
+-------
+
+HISTORY/CHANGELOG
+
+0.1 - initial unreleased version. really awful. truely horrid. very buggy.
+      wrote lots and lots of code and never tested or debugged as i went.
+0.2 - unreleased. by and large rewritten, many bugs fixed, many remaining.
+      limited release through phoenix.pm presentations. first pass at POD.
+0.3 - more bug fixes, better documentation.
+0.4 - whoops, forgot to put stuff in the README file. otherwise unchanged 
+      from 0.3. did introduce this changelog, though.

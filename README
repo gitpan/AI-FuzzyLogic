@@ -1,16 +1,43 @@
-AI/FuzzyLogic version 0.01
+AI/FuzzyLogic version 0.03
 ==========================
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+       Performs all basic and some advanced operations on Fuzzy
+       Sets. Use English-like, intentionally vague objects repre-
+       senting concepts with which to make inferences. The infer-
+       ences might be approximate reasoning about precise knowl-
+       edge, or precise reasoning about approximate knowledge.
+       This vagueness allows the capture and application of human
+       expert knowledge.
 
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+       Overloads Perl operators to perform operations on Fuzzy
+       Sets.
+
+       Few good introducts to Fuzzy Logic exist. If you find one,
+       let me know, and I'll recommend it, but I've yet to find a
+       general introduction that introduces the idea, provides a
+       sample implemenation, and shows how to use the idea and
+       implementation to solve problems. So, part of the official
+       goal of this project is to introduce Fuzzy Logic to the
+       novice and get her up and running and productive.
+
+       Other Fuzzy Modules
+       ----- ----- -------
+
+       AI::FuzzyInference, AI::Fuzzy. We don't attempt to provide
+       a structure for building inference chains - that is left
+       to regular perl code using overloaded operators, "if"
+       statements, and the like. We also define a larger set of
+       operations, introduce sets-of-sets and combinational, per-
+       mutational behavior for working on them. AI::Fuzzy doesn't
+       fit with what my understanding of Fuzzy Logic is. Sorry,
+       Tom. See "Collaboration" in the BUGS section.
+
+       Extensible framework. Modules in this distribution may be
+       subclassed to define new Fuzzy operations, combinational
+       behaviors, and other features. Extensions may be added to
+       this distribute (if I like them), or you may distribute
+       them seperately, with this module as a dependency.
+
 
 INSTALLATION
 
@@ -25,11 +52,12 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-  blah blah blah
+  Reference::English
+  Scalar::Util
 
 COPYRIGHT AND LICENCE
 
-Put the correct copyright and licence information here.
+Use and distribute under the same terms as Perl itself.
 
-Copyright (C) 2003 A. U. Thor blah blah blah
+Copyright (C) 2003 Scott Walters <scott@slowass.net>
 
