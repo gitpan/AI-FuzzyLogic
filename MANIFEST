@@ -1,0 +1,8 @@
+FuzzyLogic.pm
+FuzzyLogic/Subset.pm
+FuzzyLogic/MetaSubset.pm
+Makefile.PL
+MANIFEST
+README
+test.pl
+META.yml                                Module meta-data (added by MakeMaker)
