@@ -1,11 +1,12 @@
+# http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         AI-FuzzyLogic
-version:      0.04
+version:      0.05
 version_from: FuzzyLogic.pm
 installdirs:  site
 requires:
-    Scalar::Util:                  1.11
     English::Reference:            0.01
+    Scalar::Util:                  1.11
 
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.10_07
+generated_by: ExtUtils::MakeMaker version 6.21_01

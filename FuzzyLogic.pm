@@ -72,35 +72,35 @@ AI::FuzzyLogic - Fuzzy Set Operations and Tools
 
 =head1 DESCRIPTION
 
-Performs all basic and some advanced operations on Fuzzy Sets. Use English-like, intentionally
+Performs all basic operations on Fuzzy Sets. Use English-like, intentionally
 vague objects representing concepts with which to make inferences. The inferences might be approximate
 reasoning about precise knowledge, or precise reasoning about approximate knowledge. This
 vagueness allows the capture and application of human expert knowledge.
 
 Overloads Perl operators to perform operations on Fuzzy Sets. 
 
-Few good introducts to Fuzzy Logic exist. If you find one, let me know, and I'll recommend it,
-but I've yet to find a general introduction that introduces the idea, provides a sample
-implemenation, and shows how to use the idea and implementation to solve problems. So,
-part of the official goal of this project is to introduce Fuzzy Logic to the novice
-and get her up and running and productive.
+=head2 Other Fuzzy Modules
 
-=head3 Other Fuzzy Modules
+L<AI::FuzzyInference> and L<AI::Fuzzy> appear to better supported and more mature modules.
 
-AI::FuzzyInference, AI::Fuzzy. We don't attempt to provide a structure for building
-inference chains - that is left to regular perl code using overloaded operators, C<if>
-statements, and the like. We also define a larger set of operations, introduce sets-of-sets
-and combinational, permutational behavior for working on them. AI::Fuzzy doesn't fit
-with what my understanding of Fuzzy Logic is. Sorry, Tom. See "Collaboration" in the
-L<BUGS> section. 
+=head2 How AI::FuzzyLogic is Different
+
+It doesn't attempt to provide a structure for building
+inference chains - that is left to regular Perl code using overloaded operators, C<if>
+statements, and the like. 
+So, a major feature is the operator overloading and that interface.
+
+We also define a larg set of operations, introduce sets-of-sets
+and combinational, permutational behavior for working on them. 
 
 Extensible framework. Modules in this distribution may be subclassed to define new
 Fuzzy operations, combinational behaviors, and other features. Extensions may be
 added to this distribute (if I like them), or you may distribute them seperately,
 with this module as a dependency.
 
-=head3 Terminology
+=head2 Terminology
 
+This is not standard Fuzzy Logic terminology but instead lingo used in this module.
 Sets (AI::FuzzyLogic) contain subsets (AI::FuzzyLogic::Subset). Subsets contains elements.
 Elements are just numbers in an array (this implementation may change, but it is useful
 to think of it this way). 
@@ -108,9 +108,15 @@ Elements are also called segments sometimes, as in segments in a LED display.
 Combinational Behavior controls what happens when an operation is performed
 between two sets, one or both of which have more than one subset.
 
+=head2 Methods
+
+These public methods expose parts of the interface that aren't available through the
+overloaded syntax. The overloaded syntax is of course the ability to use Perl built
+in operators on Fuzzy sets and have Fuzzy operations performed.
+
 =cut
 
-our $VERSION='0.04';
+our $VERSION='0.05';
 
 use strict;
 use warnings;
@@ -847,6 +853,10 @@ sub bmod {
 
 =head2 Combinational Behavior
 
+A set contains subsets. How the subsets of two sets interact when an operation is
+performed is their combination behavior. Depending on what the data means and
+how you're using it, you'll need to specify how things combine.
+
 =head3 Abstractors
 
 Abstractors always return exactly one set, which is meant to be a gross summary
@@ -1029,7 +1039,7 @@ __END__
 
 =head1 INTRODUCTION TO FUZZY LOGIC
 
-Since Perl is used rather then a dedicated Fuzzy language (like DCU), 
+Since Perl is used rather than a dedicated Fuzzy language (like DCU), 
 some aids for constructing control systems and expert systems with fuzzy
 logic are provided.
 
@@ -1480,8 +1490,8 @@ Introduction to Logic: Predicate Logic, Howard Pospesel, Prentice-Hall, Inc.
 L<http://perldesignpatterns.com/?FuzzyLogic> was notes from a series of
 Perl Mongers presentations, and should serve a good forum/feedback area/list of
 resources/whatever. Examples include a Fuzzy control system and a Fuzzy
-classification system. I'm supposed to do a Fuzzy expert system for a PM
-meeting, sooner or later.
+classification system. 
+L<AI::FuzzyInference> and L<AI::Fuzzy> appear to better supported and more mature modules.
 
 =head1 BUGS
 
@@ -1512,7 +1522,8 @@ C<smallest()>, C<largest>, C<best>, and C<centroid> don't work. Rather than filt
 they just mangled failing members. Also, they are named badly. 
 
 Can't remember what library book had the DCU system. I just took a lot of notes
-and never even checked the book out. Also, some references are missing.
+and never even checked the book out. Also, some references to other resources are missing
+from the documentation.
 
 The system isn't faithful about maintaining the exact subclass when operations 
 are done on subsets. The package name is hardcoded in numerous places,
@@ -1526,16 +1537,6 @@ This is an alpha "I've been sitting on the code for too long and it is time
 to release it as it is because it is all I'm going to do without some feedback,
 or encouragement" release. 
 
-Collaboration: I might have attempted collaboration with an author of an
-existing module, but of the dozens of times I've approached people to
-let me work with them on something, not once has anyone bitten. Once I
-was approached to collaborate, and the approacher quickly changed his mind
-after I enthusasiticaly shared a few thoughts and ideas and asked for his.
-I know this isn't fair, but I give up. That this project wasn't born out of
-collaboration or extension of an existing project, I consider a bug.
-Either I'm a bigger freak than I think I am, or the community has a bad
-attitude. That is also a bug.
-
 Should be possible to ->clone() sets and subsets.
 
 Implementation notes follow after this POD in the source code to this module.
@@ -1546,8 +1547,8 @@ Wussat? Why not an INHERIT section? C'mon, get with the times, Perl people!
 
 =head1 AUTHOR
 
-Scott Walters, scott@slowass.net, based on Math::BigInt, DCU, ...
-Math::BigInt was written by Mark Biggar, overloaded interface by Ilya Zakharevich.
+Scott Walters, scott@slowass.net, based on L<Math::BigInt>, DCU, ...
+L<Math::BigInt> was written by Mark Biggar, overloaded interface by Ilya Zakharevich.
 Ilya's example code was heavily relied upon. Thanks to Phoenix Perl Mongers
 for thier feedback (silenced awe and awkward confused sidelong glances).
 
