@@ -116,7 +116,7 @@ in operators on Fuzzy sets and have Fuzzy operations performed.
 
 =cut
 
-our $VERSION='0.05';
+our $VERSION='0.06';
 
 use strict;
 use warnings;
@@ -292,7 +292,7 @@ sub add_subsets {
 
   my $me = shift;
 
-  if(scalar grep({ ! ref $_ } @_) == scalar @_) {
+  if(! grep ref $_, @_ ) {
     # they're all non-reference types
     # print "debug: ", scalar grep({ ! ref $_ } @_), " and ", scalar(@_), "\n";
     my $type = shift or die "add_subsets() all non reference case - expecting type string as first arg";
@@ -379,6 +379,24 @@ sub unwrap {
 
   return ARRAY $me;
 
+}
+
+sub set {
+    my $me = shift;
+    # 2007 new
+    return $me->[0]->set;
+}
+
+sub name {
+    my $me = shift;
+    # 2007 new
+    return $me->[0]->name;
+}
+
+sub type {
+    my $me = shift;
+    # 2007 bugfix for documentation... using this method won't make sense in a lot of cases but should right after a discriminator operation or abstractor operation where there's one set left
+    return $me->[0]->type;
 }
 
 sub subtypes { 
@@ -944,7 +962,7 @@ use base 'AI::FuzzyLogic';
 sub AI::FuzzyLogic::as_discriminator { bless $_[0], __PACKAGE__; }
 sub selector {
   my $me = shift;
-  my $them = shift; $them->isa('AI::FuzzyLogic') or die 'instance of AI::FuzzyLogic needed';
+  my $them = shift; $them or die; $them->isa('AI::FuzzyLogic') or die 'instance of AI::FuzzyLogic needed';
   my $coderef = shift; ref $coderef eq 'CODE' or die 'no coderef';
 
   my $highestrankedset;
@@ -961,9 +979,10 @@ sub selector {
         $highestrankedset = $theirsubset;
       }
     }
-    push @ret, $highestrankedset->clone() if $highestrankedset; # XXX there is no clone()!
+    # push @ret, $highestrankedset->clone() if $highestrankedset; # XXX there is no clone()!
+    push @ret, $highestrankedset if $highestrankedset;
   }
-  return undef unless @ret;
+  return unless @ret;
   return $me->new(@ret);
 }
 1;
@@ -1448,36 +1467,40 @@ found. Merely saying "20 things found" isn't very useful.
 
 =head1 EXAMPLES
 
-  $apple = new AI::FuzzyLogic  'color', 0.9, 0.3, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0; 
-  $orange = new AI::FuzzyLogic 'color', 0.0, 0.0, 0.1, 0.7, 0.5, 0.3, 0.1, 0.0;
+         use AI::FuzzyLogic;
 
-  $red = new AI::FuzzyLogic    'color', 1.0, 0.7, 0.2, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0;
-  $orange = new AI::FuzzyLogic 'color', 0.3, 0.7, 1.0, 0.7, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0;
-  $green = new AI::FuzzyLogic  'color', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 0.5, 0.0;
+         $apple = new AI::FuzzyLogic        'apple',  0.9, 0.3, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0;
+         $orange_fruit = new AI::FuzzyLogic 'orange', 0.0, 0.1, 0.7, 0.5, 0.3, 0.1, 0.0, 0.0;
 
-  $colors = new AI::FuzzyLogic $red, $orange, $green;
+         $fruits = AI::FuzzyLogic->new($apple, $orange_fruit)->as_discriminator;
 
-  # try to decide what kind of fruit we have by their color
-  $fruitbycolor = $fruit->best($colors);
-  print $fruitbycolor;
+         $red = new AI::FuzzyLogic    'red',    1.0, 0.7, 0.2, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0;
+         $orange = new AI::FuzzyLogic 'orange', 0.3, 0.7, 1.0, 0.7, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0;
+         $green = new AI::FuzzyLogic  'green',  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 0.5, 0.0;
 
-  # flat lines as sets to test degree of membership in output from another test
-  my $hedges = AI::FuzyLogic->new(
-    AI::FuzzyLogic->new('not',        0.0, 0.0),
-    AI::FuzzyLogic->new('slightly',   0.1, 0.1),
-    AI::FuzzyLogic->new('notvery',    0.2, 0.2),
-    AI::FuzzyLogic->new('kindof',     0.3, 0.3),
-    AI::FuzzyLogic->new('moderately', 0.4, 0.4),
-    AI::FuzzyLogic->new('quite',      0.7, 0.7),
-    AI::FuzzyLogic->new('definately', 0.8, 0.8),
-    AI::FuzzyLogic->new('extremely',  1.0, 1.0)
-  )->as_discriminator();
+         $colors = AI::FuzzyLogic->new($red, $orange, $green)->as_discriminator;
 
-  # tell us how orangy our orange is, and how appley our apple is
-  print $hedges->best($fruitbycolor)->type();
+         # try to decide what kind of fruit we have by their color
+         print "apples are: ", $apple->as_discriminator->best($colors)->type, "\n";
+         print "oranges are: ", $orange_fruit->as_discriminator->best($colors)->type, "\n";
 
-  $outputset = $hedges & $green; # how green is green?
-  print $outputset->type(); # outputs one of: not, slightly, notvery, kindof, ...
+         # print "apples are this green: ", ($apple & $green), "\n"; # discriminators broken in this case
+
+         # flat lines as sets to test degree of membership in output from another test
+         my $hedges = AI::FuzzyLogic->new(
+           AI::FuzzyLogic->new('not',        0.0, 0.0),
+           AI::FuzzyLogic->new('slightly',   0.1, 0.1),
+           AI::FuzzyLogic->new('notvery',    0.2, 0.2),
+           AI::FuzzyLogic->new('kindof',     0.3, 0.3),
+           AI::FuzzyLogic->new('moderately', 0.4, 0.4),
+           AI::FuzzyLogic->new('quite',      0.7, 0.7),
+           AI::FuzzyLogic->new('definately', 0.8, 0.8),
+           AI::FuzzyLogic->new('extremely',  1.0, 1.0)
+         )->as_discriminator();
+
+         # tell us how orangy our orange is, and how appley our apple is
+         print "oranges are this orange: ", ($orange & $orange_fruit)->as_discriminator()->best($hedges)->type, "\n";
+
 
 =head1 REFERENCES
 
@@ -1494,6 +1517,19 @@ classification system.
 L<AI::FuzzyInference> and L<AI::Fuzzy> appear to better supported and more mature modules.
 
 =head1 BUGS
+
+THIS MODULE IS VERY BUGGY.
+
+The idea of 'types' and 'names' got commingled.
+Sets need both.
+As it is, you're limited to which operations you can meaningfully perform
+because either result will be the meaningless type.
+
+It'll dump a stack trace for bad reasons and it shouldn't be catching DIE at all.
+
+The documentation is wrong in places and the code in others.
+
+The interface is rotten at points.
 
 A huge number of fuzzy set operations have been defined at different points by
 different people. Only a small subset of those have been included here.
